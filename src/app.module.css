@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    border: 2px solid red;
+}
+.column {
+    margin: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    flex-direction: column;
+    border: 1px solid#ff0000;
+}
+
+
+.input {
+    padding: 5px;
+    height: 5%;
+    width: 50%;
+}
+.centerContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid blue;
+    width: 100%;
+    height: 100%;
+}
+
+.vl {
+    border-left: 6px solid green;
+    height: 400px;
+    margin: 10px;
+    margin-left: 6px;
+    top: 0;
+}
