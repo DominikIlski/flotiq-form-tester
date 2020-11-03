@@ -101,9 +101,6 @@ const App = () => {
             throw new Error()
         })
         setIsReady(true)
-        console.log('waiting')
-        await sleep(15000)
-        console.log('waiting ends there')
 
         setFormURL(url);
         restartFlag = true;
