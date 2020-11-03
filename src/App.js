@@ -3,10 +3,25 @@ import React, {useState, useEffect} from "react";
 import "./App.css";
 import styles from "./app.module.css";
 import {CircularProgress} from "@material-ui/core";
-
+import https from 'https';
 
 const axios = require('axios').default
 const GENERATOR_URL = 'https://mzucwve831.execute-api.us-east-1.amazonaws.com/default/flotiq-form-generator'
+let tries = 0;
+const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+}
+
+let interval = setInterval(() => {
+}, 1000000000);
+
+
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
 const FormPart = ({title, value, setValue}) => {
     return (
@@ -26,12 +41,19 @@ const FormPart = ({title, value, setValue}) => {
 
 const useScript = url => {
     useEffect(() => {
-        const script = document.createElement('script');
+        const styles = document.createElement("link");
+        styles.href = "../src/styles.css";
+        styles.rel="stylesheet";
+        let script
+        console.log('inside UseScript')
+
+        script = document.createElement('script');
 
         script.src = url;
         script.async = true;
 
         document.body.appendChild(script);
+        clearInterval(interval)
 
         return () => {
             document.body.removeChild(script);
@@ -40,10 +62,17 @@ const useScript = url => {
 };
 
 
+
+/*const isFormReady = async (url, formUrl, setFormUrl) => {
+    console.log('inside isFormReady')
+    const res = await axios.get(url).catch((e) => console.log(e));
+    console.log(res)
+    if (res && (res.status === 200))
+        return url;
+    return ''
+}*/
+
 const App = () => {
-
-
-
 
     const [flotiqApiKeyADD, setFlotiqApiKeyADD] = useState(
         "0be89aa558c1a1d1d0d2a03a806b0349"
@@ -54,26 +83,22 @@ const App = () => {
     const [CTDslug, setCTDslug] = useState('contact')
 
     const [userIdentifier, setUserIdentifier] = useState(
-        'dded760e6aa0313df640588a7f4b01bd');
+        '318e11093182afdde7980058ff0f8808');
     const [origin, setOrigin] = useState(
         '*'
     )
 
-    const [isCreated, setIsCreated] = useState(false)
-
     const [isFetching, setIsFetching] = useState(false)
 
     const [formURL, setFormURL] = useState(``)
-    //const [isFetching, SetIsFetching] = useState(false);
-    useScript(formURL)
+    const [isReady, setIsReady] = useState(false);
 
 
-
-
+    useScript(formURL, isReady)
     const submit = async () => {
-
+        let url;
         setIsFetching(true)
-        axios.post(GENERATOR_URL, {
+        await axios.post(GENERATOR_URL, {
             'flotiqApiKeyADD': flotiqApiKeyADD,
             'flotiqApiKeyGET': flotiqApiKeyGET,
             'CTDslug': CTDslug,
@@ -83,19 +108,23 @@ const App = () => {
             console.log(res)
             console.log(res.data.formURL)
             if (res.status === 200) {
-
-                setFormURL(res.data.formURL);
-
-                setIsCreated(true);
-                setIsFetching(false)
-
-            }
-
+                url = res.data.formURL;
+            } else throw new Error();
+            setIsFetching(false)
         }).catch((err) => {
             console.log(err)
         })
+        setIsReady(true)
+        console.log('waiting')
+        await sleep(10000)
+        console.log('waiting ends there')
+
+
+        setFormURL(url)
+
 
     };
+
 
     return (
         <div className={styles.container}>
@@ -111,15 +140,10 @@ const App = () => {
                     <input type="button" value="Create Flotiq Forms!" onClick={submit}/>
                 </form>
             </div>
-            {isCreated ?
-                (<flotiq-form/> ? <div className={styles.column}>
-                    <flotiq-form/>
-                </div> :
-                        (<div className={styles.column}>
-                            <div className={styles.centerContent}>
-                                <CircularProgress size={300}/>
-                            </div>
-                        </div>)
+            {isReady ?
+                (<div className={styles.column}>
+                        <flotiq-form/>
+                    </div>
                 )
                 :
                 ((isFetching ?
