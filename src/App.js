@@ -3,19 +3,9 @@ import React, {useState, useEffect} from "react";
 import "./App.css";
 import styles from "./app.module.css";
 import {CircularProgress} from "@material-ui/core";
-import https from 'https';
 
 const axios = require('axios').default
 const GENERATOR_URL = 'https://mzucwve831.execute-api.us-east-1.amazonaws.com/default/flotiq-form-generator'
-let tries = 0;
-const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'
-}
-
-let interval = setInterval(() => {
-}, 1000000000);
-
 
 function sleep(ms) {
     return new Promise((resolve) => {
@@ -53,24 +43,12 @@ const useScript = url => {
         script.async = true;
 
         document.body.appendChild(script);
-        clearInterval(interval)
 
         return () => {
             document.body.removeChild(script);
         }
     }, [url]);
 };
-
-
-
-/*const isFormReady = async (url, formUrl, setFormUrl) => {
-    console.log('inside isFormReady')
-    const res = await axios.get(url).catch((e) => console.log(e));
-    console.log(res)
-    if (res && (res.status === 200))
-        return url;
-    return ''
-}*/
 
 const App = () => {
 
@@ -89,12 +67,11 @@ const App = () => {
     )
 
     const [isFetching, setIsFetching] = useState(false)
-
     const [formURL, setFormURL] = useState(``)
     const [isReady, setIsReady] = useState(false);
 
-
     useScript(formURL, isReady)
+
     const submit = async () => {
         let url;
         setIsFetching(true)
@@ -113,18 +90,17 @@ const App = () => {
             setIsFetching(false)
         }).catch((err) => {
             console.log(err)
+            throw new Error()
         })
         setIsReady(true)
         console.log('waiting')
         await sleep(10000)
         console.log('waiting ends there')
 
-
         setFormURL(url)
 
 
     };
-
 
     return (
         <div className={styles.container}>
