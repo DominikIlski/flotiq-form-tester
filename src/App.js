@@ -7,11 +7,6 @@ import {CircularProgress} from "@material-ui/core";
 const axios = require('axios').default
 const GENERATOR_URL = 'https://mzucwve831.execute-api.us-east-1.amazonaws.com/default/flotiq-form-generator'
 
-function sleep(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
 let restartFlag = false;
 
 const FormPart = ({title, value, setValue}) => {
