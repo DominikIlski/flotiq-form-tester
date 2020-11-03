@@ -12,6 +12,7 @@ function sleep(ms) {
         setTimeout(resolve, ms);
     });
 }
+let restartFlag = false;
 
 const FormPart = ({title, value, setValue}) => {
     return (
@@ -73,6 +74,13 @@ const App = () => {
     useScript(formURL, isReady)
 
     const submit = async () => {
+        if(restartFlag)
+        {
+            setIsReady(false);
+            setIsFetching(false)
+            setFormURL('');
+
+        }
         let url;
         setIsFetching(true)
         await axios.post(GENERATOR_URL, {
@@ -94,11 +102,11 @@ const App = () => {
         })
         setIsReady(true)
         console.log('waiting')
-        await sleep(10000)
+        await sleep(15000)
         console.log('waiting ends there')
 
-        setFormURL(url)
-
+        setFormURL(url);
+        restartFlag = true;
 
     };
 
