@@ -9,6 +9,12 @@ const GENERATOR_URL = 'https://mzucwve831.execute-api.us-east-1.amazonaws.com/de
 
 let restartFlag = false;
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 const FormPart = ({title, value, setValue}) => {
     return (
         <div>
@@ -89,15 +95,18 @@ const App = () => {
             console.log(res.data.formURL)
             if (res.status === 200) {
                 url = res.data.formURL;
-            } else throw new Error();
-            setIsFetching(false)
+            }
+
         }).catch((err) => {
             console.log(err)
             throw new Error()
         })
+        await sleep(20000)
         setIsReady(true)
 
         setFormURL(url);
+        setFormURL(url);
+        setIsFetching(false)
         restartFlag = true;
 
     };
