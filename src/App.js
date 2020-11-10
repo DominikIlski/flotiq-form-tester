@@ -37,7 +37,7 @@ const useScript = url => {
         styles.href = "../src/styles.css";
         styles.rel="stylesheet";
         let script
-        console.log('inside UseScript')
+
 
         script = document.createElement('script');
 
@@ -73,9 +73,8 @@ const App = () => {
     const [isReady, setIsReady] = useState(false);
 
     useScript(formURL, isReady)
-
     const submit = async () => {
-        if(restartFlag)
+       /* if(restartFlag)
         {
             setIsReady(false);
             setIsFetching(false)
@@ -102,10 +101,9 @@ const App = () => {
             throw new Error()
         })
         await sleep(20000)
+        setIsReady(true)*/
         setIsReady(true)
-
-        setFormURL(url);
-        setFormURL(url);
+        setFormURL('https://klwnxduc21.execute-api.us-east-1.amazonaws.com/PROD/contact');
         setIsFetching(false)
         restartFlag = true;
 
